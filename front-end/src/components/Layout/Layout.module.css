@@ -1,8 +1,10 @@
 .layout {
   display: grid;
-  grid-auto-rows: auto 1fr auto;
-  grid-auto-flow: row;
   gap: 4rem;
-  padding: 4rem;
+  grid-auto-flow: row;
+  grid-auto-rows: auto 1fr auto;
+  margin: 0 auto;
+  max-width: 1280px;
   min-height: 100%;
+  padding: 4rem;
 }
