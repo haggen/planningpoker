@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useRoute } from "wouter";
 import { nanoid } from "nanoid";
 
@@ -9,29 +9,53 @@ import { Deck } from "src/components/Deck";
 
 import styles from "./App.module.css";
 
-const createRoomId = () => {
+export enum GamePhase {
+  Voting,
+  Reveal,
+}
+
+type GameContext = {
+  id: string | undefined;
+  phase: GamePhase;
+};
+
+const defaultState = {
+  id: undefined,
+  phase: GamePhase.Voting,
+};
+
+const Context = createContext<GameContext>(defaultState);
+
+export const useGameState = () => {
+  return useContext(Context);
+};
+
+const createGameId = () => {
   return nanoid(10);
 };
 
 export const App = () => {
-  const [match, params] = useRoute("/:roomId");
+  const [phase, setPhase] = useState(defaultState.phase);
+  const [match, params] = useRoute("/:gameId");
   const [, setLocation] = useLocation();
 
-  const { roomId } = params ?? {};
+  const { gameId } = params ?? {};
 
   useEffect(() => {
     if (!match) {
-      setLocation("/" + createRoomId(), { replace: true });
+      setLocation("/" + createGameId(), { replace: true });
     }
   }, [match, setLocation]);
 
-  console.log({ roomId });
+  console.log({ gameId });
 
   return (
-    <Layout>
-      <Header />
-      <Content />
-      <Deck />
-    </Layout>
+    <Context.Provider value={{ id: gameId, phase }}>
+      <Layout>
+        <Header />
+        <Content />
+        <Deck />
+      </Layout>
+    </Context.Provider>
   );
 };
