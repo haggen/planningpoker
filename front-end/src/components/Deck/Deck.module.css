@@ -1,0 +1,8 @@
+.deck {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  position: sticky;
+}

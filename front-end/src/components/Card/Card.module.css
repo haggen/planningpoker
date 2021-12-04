@@ -1,0 +1,18 @@
+.card {
+  align-items: center;
+  background-color: var(--color-black-pale);
+  border-radius: 8px;
+  color: var(--color-black);
+  display: flex;
+  font-size: 1.5rem;
+  line-height: 1;
+  height: 5.25rem;
+  justify-content: center;
+  width: 3.5rem;
+}
+
+.card:focus,
+.card:hover {
+  background-color: var(--color-primary-pale);
+  color: var(--color-primary);
+}

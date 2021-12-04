@@ -1,13 +1,71 @@
-body {
+@import "modern-normalize";
+
+* {
+  font: inherit;
+  line-height: inherit;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  --color-primary: hsl(250, 100%, 69%);
+  --color-primary-pale: hsl(248, 100%, 97%);
+  --color-black: hsl(0, 0%, 20%);
+  --color-black-pale: hsl(0, 0%, 92%);
+
+  -webkit-tap-highlight-color: transparent;
+  font: 16px/1.5 Roboto, sans-serif;
+  tab-size: 4;
+}
+
+body {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+small {
+  font-size: 0.75em;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+  line-height: inherit;
+  border: 0;
+  display: inline-block;
+}
+
+[aria-busy="true"] {
+  cursor: progress;
+}
+
+[aria-disabled="true"],
+[disabled] {
+  cursor: not-allowed;
+}
+
+[aria-hidden="false"][hidden] {
+  display: initial;
+}
+
+[aria-hidden="false"][hidden]:not(:focus) {
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
 }

@@ -1,0 +1,9 @@
+.brand {
+  display: block;
+  height: 3rem;
+}
+
+.brand svg {
+  display: block;
+  height: 100%;
+}
