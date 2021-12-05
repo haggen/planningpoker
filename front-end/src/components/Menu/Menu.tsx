@@ -14,6 +14,10 @@ export const Menu = () => {
     dispatch({ type: "changePhase", payload: GamePhase.Voting });
   };
 
+  const handleChangeName = () => {
+    dispatch({ type: "changePlayerName", payload: "" });
+  };
+
   return (
     <ul className={styles.menu}>
       <li>
@@ -24,7 +28,9 @@ export const Menu = () => {
         )}
       </li>
       <li>
-        <Button type="ghost">{playerName}</Button>
+        <Button type="ghost" onClick={handleChangeName}>
+          {playerName}
+        </Button>
       </li>
     </ul>
   );
