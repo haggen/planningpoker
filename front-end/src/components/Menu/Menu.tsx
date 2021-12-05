@@ -4,7 +4,7 @@ import { GamePhase, useGameState } from "src/components/App";
 import styles from "./Menu.module.css";
 
 export const Menu = () => {
-  const { phase, dispatch } = useGameState();
+  const { phase, playerName, dispatch } = useGameState();
 
   const handleReveal = () => {
     dispatch({ type: "changePhase", payload: GamePhase.Reveal });
@@ -24,7 +24,7 @@ export const Menu = () => {
         )}
       </li>
       <li>
-        <Button type="ghost">Fulano</Button>
+        <Button type="ghost">{playerName}</Button>
       </li>
     </ul>
   );

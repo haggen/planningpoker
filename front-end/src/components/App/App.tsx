@@ -20,6 +20,7 @@ export enum GamePhase {
 
 type State = {
   phase: GamePhase;
+  playerName: string;
 };
 
 type ContextValue = State & {
@@ -27,13 +28,19 @@ type ContextValue = State & {
   dispatch: Dispatch<Action>;
 };
 
-type Action = {
-  type: "changePhase";
-  payload: GamePhase;
-};
+type Action =
+  | {
+      type: "changePhase";
+      payload: GamePhase;
+    }
+  | {
+      type: "changePlayerName";
+      payload: string;
+    };
 
 const defaultState = {
   phase: GamePhase.Voting,
+  playerName: "",
 };
 
 const Context = createContext<ContextValue>({
@@ -57,6 +64,11 @@ const reducer = (state: State, action: Action) => {
         ...state,
         phase: action.payload,
       };
+    case "changePlayerName":
+      return {
+        ...state,
+        playerName: action.payload,
+      };
     default:
       return state;
   }
@@ -68,12 +80,22 @@ export const App = () => {
   const [, setLocation] = useLocation();
 
   const { gameId } = params ?? {};
+  const { playerName } = state;
 
   useEffect(() => {
     if (!match) {
       setLocation("/" + createGameId(), { replace: true });
     }
   }, [match, setLocation]);
+
+  useEffect(() => {
+    if (!playerName) {
+      dispatch({
+        type: "changePlayerName",
+        payload: prompt("Qual seu nome?") ?? "",
+      });
+    }
+  }, [playerName, dispatch]);
 
   return (
     <Context.Provider value={{ id: gameId, dispatch, ...state }}>
