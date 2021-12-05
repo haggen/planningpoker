@@ -1,10 +1,8 @@
-import { ReactNode } from "react";
-
 import { Table } from "src/components/Table";
 
 import styles from "./Content.module.css";
 
-type ContentProps = {};
+// type ContentProps = {};
 
 export const Content = () => {
   return (

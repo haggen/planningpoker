@@ -1,6 +1,8 @@
 .brand {
+  border-radius: 4px;
   display: block;
   height: 3rem;
+  width: 3rem;
 }
 
 .brand svg {

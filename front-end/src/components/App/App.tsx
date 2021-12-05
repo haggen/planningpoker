@@ -7,8 +7,6 @@ import { Header } from "src/components/Header";
 import { Content } from "src/components/Content";
 import { Deck } from "src/components/Deck";
 
-import styles from "./App.module.css";
-
 export enum GamePhase {
   Voting,
   Reveal,
@@ -35,7 +33,7 @@ const createGameId = () => {
 };
 
 export const App = () => {
-  const [phase, setPhase] = useState(defaultState.phase);
+  const [phase] = useState(defaultState.phase);
   const [match, params] = useRoute("/:gameId");
   const [, setLocation] = useLocation();
 

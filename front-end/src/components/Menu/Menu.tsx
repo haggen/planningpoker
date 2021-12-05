@@ -4,7 +4,7 @@ import { GamePhase, useGameState } from "src/components/App";
 import styles from "./Menu.module.css";
 
 export const Menu = () => {
-  const { id, phase } = useGameState();
+  const { phase } = useGameState();
 
   return (
     <ul className={styles.menu}>
@@ -15,7 +15,9 @@ export const Menu = () => {
           <Button>Recomeçar</Button>
         )}
       </li>
-      <li>Fulano de Tal</li>
+      <li>
+        <Button type="ghost">Fulano</Button>
+      </li>
     </ul>
   );
 };

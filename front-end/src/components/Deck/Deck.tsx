@@ -2,7 +2,7 @@ import { Card } from "src/components/Card";
 
 import styles from "./Deck.module.css";
 
-type DeckProps = {};
+// type DeckProps = {};
 
 export const Deck = () => {
   return (

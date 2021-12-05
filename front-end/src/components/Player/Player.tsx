@@ -7,7 +7,7 @@ import styles from "./Player.module.css";
 
 type PlayerProps = {
   name: string;
-  vote: string;
+  vote?: string | undefined;
 };
 
 export const Player = ({ name, vote }: PlayerProps) => {

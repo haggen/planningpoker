@@ -46,10 +46,15 @@ input,
 button,
 select,
 textarea {
+  border: 0;
+  color: inherit;
+  display: inline-block;
   font: inherit;
   line-height: inherit;
-  border: 0;
-  display: inline-block;
+}
+
+:focus {
+  outline: var(--color-black) dotted 1px;
 }
 
 svg:not([fill]) {

@@ -3,11 +3,12 @@
   background-color: var(--color-black-pale);
   border-radius: 8px;
   color: var(--color-black);
+  cursor: pointer;
   display: flex;
   font-size: 1.5rem;
-  line-height: 1;
   height: 5.25rem;
   justify-content: center;
+  line-height: 1;
   width: 3.5rem;
 }
 
