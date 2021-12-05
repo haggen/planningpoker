@@ -7,6 +7,7 @@ import {
 } from "react";
 import { useLocation, useRoute } from "wouter";
 import { nanoid } from "nanoid";
+import update from "immutability-helper";
 
 import { Layout } from "src/components/Layout";
 import { Header } from "src/components/Header";
@@ -19,14 +20,20 @@ export enum GamePhase {
   Reveal,
 }
 
+type Player = {
+  id: string;
+  name: string;
+  vote: string;
+};
+
 type State = {
   phase: GamePhase;
-  playerName: string;
+  players: Player[];
 };
 
 type ContextValue = State & {
   id: string | undefined;
-  playerId: string | undefined;
+  currentPlayer: Player | undefined;
   dispatch: Dispatch<Action>;
 };
 
@@ -37,17 +44,28 @@ type Action =
     }
   | {
       type: "changePlayerName";
-      payload: string;
+      payload: {
+        id: string;
+        name: string;
+      };
+    }
+  | {
+      type: "addPlayer";
+      payload: {
+        id: string;
+        name: string;
+        vote: string;
+      };
     };
 
 const defaultState = {
   phase: GamePhase.Voting,
-  playerName: "",
+  players: [],
 };
 
 const Context = createContext<ContextValue>({
   id: undefined,
-  playerId: undefined,
+  currentPlayer: undefined,
   dispatch: () => {},
   ...defaultState,
 });
@@ -64,18 +82,32 @@ const createPlayerId = () => {
   return nanoid(10);
 };
 
+export const promptPlayerName = () => {
+  const name = prompt("Qual seu nome?");
+  if (name) {
+    return name;
+  }
+  return "Anônimo";
+};
+
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "changePhase":
-      return {
-        ...state,
-        phase: action.payload,
-      };
+      return update(state, { phase: { $set: action.payload } });
+    case "addPlayer":
+      return update(state, { players: { $push: [action.payload] } });
     case "changePlayerName":
-      return {
-        ...state,
-        playerName: action.payload,
-      };
+      const playerIndex = state.players.findIndex(
+        (player) => player.id === action.payload.id
+      );
+      if (playerIndex < 0) {
+        return state;
+      }
+      return update(state, {
+        players: {
+          [playerIndex]: { name: { $set: action.payload.name } },
+        },
+      });
     default:
       return state;
   }
@@ -88,7 +120,8 @@ export const App = () => {
   const [, setLocation] = useLocation();
 
   const { gameId } = params ?? {};
-  const { playerName } = state;
+  const { players } = state;
+  const currentPlayer = players.find((player) => player.id === playerId);
 
   useEffect(() => {
     if (!match) {
@@ -97,16 +130,24 @@ export const App = () => {
   }, [match, setLocation]);
 
   useEffect(() => {
-    if (!playerName) {
+    if (!playerId) {
+      return;
+    }
+
+    if (!currentPlayer) {
       dispatch({
-        type: "changePlayerName",
-        payload: prompt("Qual seu nome?") ?? "",
+        type: "addPlayer",
+        payload: {
+          id: playerId,
+          name: promptPlayerName(),
+          vote: "",
+        },
       });
     }
-  }, [playerName, dispatch]);
+  }, [playerId, currentPlayer, dispatch]);
 
   return (
-    <Context.Provider value={{ id: gameId, playerId, dispatch, ...state }}>
+    <Context.Provider value={{ id: gameId, currentPlayer, dispatch, ...state }}>
       <Layout>
         <Header />
         <Content />
