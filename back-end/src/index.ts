@@ -2,12 +2,15 @@ import { createServer } from "http";
 import { Socket } from "net";
 import { URL } from "url";
 import { WebSocketServer } from "ws";
+import { App } from "./app";
 
 const webSocketServer = new WebSocketServer({ noServer: true });
 
 const webServer = createServer((req, resp) => {
   // resp.end();
 });
+
+const app = new App();
 
 webServer.on("upgrade", (req, socket, head) => {
   webSocketServer.handleUpgrade(req, socket as Socket, head, (ws) => {
@@ -20,12 +23,20 @@ webSocketServer.on("connection", (ws, req) => {
 
   console.log(`client connected from channel ${pathname}`);
 
+  const channel = app.getChannel(pathname);
+  const client = channel.addClient(ws);
+
   ws.on("message", (message) => {
     console.log(`message received in channel ${pathname}: ${message}`);
+
+    channel.broadcast(message.toString("utf8"), client);
   });
 
   ws.on("close", (code) => {
     console.log(`client disconnected from channel ${pathname}`);
+
+    channel.removeClient(client);
+    app.attemptDisposeChannel(channel.name);
   });
 });
 
