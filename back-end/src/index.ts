@@ -26,10 +26,12 @@ webSocketServer.on("connection", (ws, req) => {
   const channel = app.getChannel(pathname);
   const client = channel.addClient(ws);
 
-  ws.on("message", (message) => {
-    console.log(`message received in channel ${pathname}: ${message}`);
+  ws.on("message", (rawData) => {
+    console.log(`message received in channel ${pathname}: ${rawData}`);
 
-    channel.broadcast(message.toString("utf8"), client);
+    const message = JSON.parse(rawData.toString());
+
+    channel.handleAction(message, client);
   });
 
   ws.on("close", (code) => {

@@ -1,5 +1,7 @@
 import { WebSocket } from "ws";
 
+type Action<T = unknown> = { type: string; payload: T };
+
 export class App {
   channels: Record<string, Channel> = {};
 
@@ -25,38 +27,61 @@ class Client {
     this.socket = ws;
   }
 
-  send(message: string) {
-    this.socket.send(message);
+  send<T>(message: T) {
+    const rawData = JSON.stringify(message);
+    this.socket.send(rawData);
   }
 }
 
 class Channel {
   name: string;
-  clients: Client[] = [];
+  staleClients: Client[] = [];
+  freshClients: Client[] = [];
 
   constructor(name: string) {
     this.name = name;
   }
 
   isEmpty() {
-    return this.clients.length === 0;
+    return this.freshClients.length === 0;
   }
 
   addClient(socket: WebSocket) {
     const client = new Client(socket);
-    this.clients.push(client);
+    if (this.freshClients.length === 0) {
+      this.freshClients.push(client);
+    } else {
+      this.staleClients.push(client);
+      this.requestSync();
+    }
     return client;
   }
 
   removeClient(client: Client) {
-    this.clients = this.clients.filter((c) => c !== client);
+    this.staleClients = this.staleClients.filter((c) => c !== client);
+    this.freshClients = this.freshClients.filter((c) => c !== client);
   }
 
-  broadcast(message: string, sender: Client) {
-    this.clients.forEach((client) => {
-      if (client !== sender) {
-        client.send(message);
-      }
+  requestSync() {
+    this.freshClients[0].send({ type: "sync" });
+  }
+
+  handleAction(action: Action, sender: Client) {
+    if (action.type === "sync") {
+      this.broadcast(action, this.staleClients);
+      this.freshClients.push(...this.staleClients);
+      this.staleClients = [];
+    } else {
+      this.broadcast(
+        action,
+        this.freshClients.filter((c) => c !== sender)
+      );
+    }
+  }
+
+  broadcast(action: Action, recipients: Client[]) {
+    recipients.forEach((client) => {
+      client.send(action);
     });
   }
 }
