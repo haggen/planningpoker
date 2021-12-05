@@ -39,8 +39,10 @@ type ContextValue = State & {
 
 type Action =
   | {
-      type: "changePhase";
-      payload: GamePhase;
+      type: "reveal";
+    }
+  | {
+      type: "restart";
     }
   | {
       type: "changePlayerVote";
@@ -98,8 +100,15 @@ export const promptPlayerName = () => {
 };
 
 const reducer = (state: State, action: Action) => {
-  if (action.type === "changePhase") {
-    return update(state, { phase: { $set: action.payload } });
+  if (action.type === "reveal") {
+    return update(state, { phase: { $set: GamePhase.Reveal } });
+  } else if (action.type === "restart") {
+    return update(state, {
+      phase: { $set: GamePhase.Voting },
+      players: {
+        $set: state.players.map((player) => ({ ...player, vote: "" })),
+      },
+    });
   } else if (action.type === "addPlayer") {
     return update(state, { players: { $push: [action.payload] } });
   } else if (action.type === "changePlayerName") {

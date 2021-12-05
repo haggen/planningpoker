@@ -7,11 +7,11 @@ export const Menu = () => {
   const { phase, currentPlayer, dispatch } = useGameState();
 
   const handleReveal = () => {
-    dispatch({ type: "changePhase", payload: GamePhase.Reveal });
+    dispatch({ type: "reveal" });
   };
 
   const handleRestart = () => {
-    dispatch({ type: "changePhase", payload: GamePhase.Voting });
+    dispatch({ type: "restart" });
   };
 
   const handleChangeName = () => {
