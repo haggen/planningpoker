@@ -12,6 +12,7 @@ import { Layout } from "src/components/Layout";
 import { Header } from "src/components/Header";
 import { Content } from "src/components/Content";
 import { Deck } from "src/components/Deck";
+import { useStoredState } from "src/hooks/useStoredState";
 
 export enum GamePhase {
   Voting,
@@ -25,6 +26,7 @@ type State = {
 
 type ContextValue = State & {
   id: string | undefined;
+  playerId: string | undefined;
   dispatch: Dispatch<Action>;
 };
 
@@ -45,6 +47,7 @@ const defaultState = {
 
 const Context = createContext<ContextValue>({
   id: undefined,
+  playerId: undefined,
   dispatch: () => {},
   ...defaultState,
 });
@@ -54,6 +57,10 @@ export const useGameState = () => {
 };
 
 const createGameId = () => {
+  return nanoid(10);
+};
+
+const createPlayerId = () => {
   return nanoid(10);
 };
 
@@ -75,6 +82,7 @@ const reducer = (state: State, action: Action) => {
 };
 
 export const App = () => {
+  const [playerId] = useStoredState("playerId", createPlayerId);
   const [state, dispatch] = useReducer(reducer, defaultState);
   const [match, params] = useRoute("/:gameId");
   const [, setLocation] = useLocation();
@@ -98,7 +106,7 @@ export const App = () => {
   }, [playerName, dispatch]);
 
   return (
-    <Context.Provider value={{ id: gameId, dispatch, ...state }}>
+    <Context.Provider value={{ id: gameId, playerId, dispatch, ...state }}>
       <Layout>
         <Header />
         <Content />
