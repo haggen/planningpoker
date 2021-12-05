@@ -4,14 +4,14 @@ import { GamePhase, useGameState } from "src/components/App";
 import styles from "./Menu.module.css";
 
 export const Menu = () => {
-  const { phase, setPhase } = useGameState();
+  const { phase, dispatch } = useGameState();
 
   const handleReveal = () => {
-    setPhase(GamePhase.Reveal);
+    dispatch({ type: "changePhase", payload: GamePhase.Reveal });
   };
 
   const handleRestart = () => {
-    setPhase(GamePhase.Voting);
+    dispatch({ type: "changePhase", payload: GamePhase.Voting });
   };
 
   return (
