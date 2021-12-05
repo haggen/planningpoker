@@ -1,6 +1,6 @@
 .menu {
   align-items: center;
   display: flex;
-  gap: 1.5rem;
+  gap: 0.5rem;
   justify-content: space-between;
 }
