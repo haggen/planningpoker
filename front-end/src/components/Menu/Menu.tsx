@@ -1,10 +1,10 @@
 import { Button } from "src/components/Button";
-import { GamePhase, useGameState } from "src/components/App";
+import { GamePhase, useGameState, promptPlayerName } from "src/components/App";
 
 import styles from "./Menu.module.css";
 
 export const Menu = () => {
-  const { phase, playerName, dispatch } = useGameState();
+  const { phase, currentPlayer, dispatch } = useGameState();
 
   const handleReveal = () => {
     dispatch({ type: "changePhase", payload: GamePhase.Reveal });
@@ -15,7 +15,13 @@ export const Menu = () => {
   };
 
   const handleChangeName = () => {
-    dispatch({ type: "changePlayerName", payload: "" });
+    if (!currentPlayer) {
+      return;
+    }
+    dispatch({
+      type: "changePlayerName",
+      payload: { id: currentPlayer.id, name: promptPlayerName() },
+    });
   };
 
   return (
@@ -29,7 +35,7 @@ export const Menu = () => {
       </li>
       <li>
         <Button type="ghost" onClick={handleChangeName}>
-          {playerName}
+          {currentPlayer?.name}
         </Button>
       </li>
     </ul>
