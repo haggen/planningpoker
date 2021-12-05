@@ -23,7 +23,7 @@ export const Player = ({ name, vote }: PlayerProps) => {
             <Hourglass />
           )
         ) : (
-          vote
+          vote || "-"
         )}
       </span>
       <span className={styles.name}>{name}</span>
