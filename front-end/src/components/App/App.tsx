@@ -1,6 +1,7 @@
 import {
   createContext,
   Dispatch,
+  useCallback,
   useContext,
   useEffect,
   useReducer,
@@ -8,6 +9,7 @@ import {
 import { useLocation, useRoute } from "wouter";
 import { nanoid } from "nanoid";
 import update from "immutability-helper";
+import useWebSocket from "react-use-websocket";
 
 import { Layout } from "src/components/Layout";
 import { Header } from "src/components/Header";
@@ -65,6 +67,10 @@ type Action =
         name: string;
         vote: string;
       };
+    }
+  | {
+      type: "sync";
+      payload?: State;
     };
 
 const defaultState = {
@@ -102,6 +108,14 @@ export const promptPlayerName = () => {
 const reducer = (state: State, action: Action) => {
   if (action.type === "reveal") {
     return update(state, { phase: { $set: GamePhase.Reveal } });
+  } else if (action.type === "sync") {
+    if (!action.payload) {
+      return state;
+    }
+    return update(state, {
+      phase: { $set: action.payload.phase },
+      players: { $push: action.payload.players },
+    });
   } else if (action.type === "restart") {
     return update(state, {
       phase: { $set: GamePhase.Voting },
@@ -142,13 +156,35 @@ const reducer = (state: State, action: Action) => {
 
 export const App = () => {
   const [playerId] = useStoredState("playerId", createPlayerId);
-  const [state, dispatch] = useReducer(reducer, defaultState);
+  const [state, reducerDispatch] = useReducer(reducer, defaultState);
   const [match, params] = useRoute("/:gameId");
   const [, setLocation] = useLocation();
 
   const { gameId } = params ?? {};
+
+  const { sendJsonMessage: webSocketDispatch, readyState } = useWebSocket(
+    match ? `ws://localhost:5000/${gameId}` : "",
+    {
+      onMessage(event) {
+        const action = JSON.parse(event.data);
+        if (action.type === "sync" && !action.payload) {
+          webSocketDispatch({ type: "sync", payload: state });
+        }
+        reducerDispatch(action);
+      },
+    }
+  );
+
   const { players } = state;
   const currentPlayer = players.find((player) => player.id === playerId);
+
+  const dispatch = useCallback(
+    (action: Action) => {
+      reducerDispatch(action);
+      webSocketDispatch(action);
+    },
+    [webSocketDispatch]
+  );
 
   useEffect(() => {
     if (!match) {
@@ -158,6 +194,10 @@ export const App = () => {
 
   useEffect(() => {
     if (!playerId) {
+      return;
+    }
+
+    if (readyState !== WebSocket.OPEN) {
       return;
     }
 
@@ -171,7 +211,7 @@ export const App = () => {
         },
       });
     }
-  }, [playerId, currentPlayer, dispatch]);
+  }, [readyState, playerId, currentPlayer, dispatch]);
 
   return (
     <Context.Provider value={{ id: gameId, currentPlayer, dispatch, ...state }}>
