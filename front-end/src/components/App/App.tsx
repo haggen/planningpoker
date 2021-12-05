@@ -43,6 +43,13 @@ type Action =
       payload: GamePhase;
     }
   | {
+      type: "changePlayerVote";
+      payload: {
+        id: string;
+        vote: string;
+      };
+    }
+  | {
       type: "changePlayerName";
       payload: {
         id: string;
@@ -91,25 +98,36 @@ export const promptPlayerName = () => {
 };
 
 const reducer = (state: State, action: Action) => {
-  switch (action.type) {
-    case "changePhase":
-      return update(state, { phase: { $set: action.payload } });
-    case "addPlayer":
-      return update(state, { players: { $push: [action.payload] } });
-    case "changePlayerName":
-      const playerIndex = state.players.findIndex(
-        (player) => player.id === action.payload.id
-      );
-      if (playerIndex < 0) {
-        return state;
-      }
-      return update(state, {
-        players: {
-          [playerIndex]: { name: { $set: action.payload.name } },
-        },
-      });
-    default:
+  if (action.type === "changePhase") {
+    return update(state, { phase: { $set: action.payload } });
+  } else if (action.type === "addPlayer") {
+    return update(state, { players: { $push: [action.payload] } });
+  } else if (action.type === "changePlayerName") {
+    const playerIndex = state.players.findIndex(
+      (player) => player.id === action.payload.id
+    );
+    if (playerIndex < 0) {
       return state;
+    }
+    return update(state, {
+      players: {
+        [playerIndex]: { name: { $set: action.payload.name } },
+      },
+    });
+  } else if (action.type === "changePlayerVote") {
+    const playerIndex = state.players.findIndex(
+      (player) => player.id === action.payload.id
+    );
+    if (playerIndex < 0) {
+      return state;
+    }
+    return update(state, {
+      players: {
+        [playerIndex]: { vote: { $set: action.payload.vote } },
+      },
+    });
+  } else {
+    return state;
   }
 };
 
