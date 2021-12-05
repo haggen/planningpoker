@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useLocation, useRoute } from "wouter";
 import { nanoid } from "nanoid";
 
@@ -12,20 +19,22 @@ export enum GamePhase {
   Reveal,
 }
 
-type GameContext = {
+type GameState = {
   id: string | undefined;
   phase: GamePhase;
+  setPhase: Dispatch<SetStateAction<GamePhase>>;
 };
 
 const defaultState = {
   id: undefined,
   phase: GamePhase.Voting,
+  setPhase: () => {},
 };
 
-const Context = createContext<GameContext>(defaultState);
+const GameContext = createContext<GameState>(defaultState);
 
 export const useGameState = () => {
-  return useContext(Context);
+  return useContext(GameContext);
 };
 
 const createGameId = () => {
@@ -33,7 +42,7 @@ const createGameId = () => {
 };
 
 export const App = () => {
-  const [phase] = useState(defaultState.phase);
+  const [phase, setPhase] = useState(defaultState.phase);
   const [match, params] = useRoute("/:gameId");
   const [, setLocation] = useLocation();
 
@@ -45,15 +54,13 @@ export const App = () => {
     }
   }, [match, setLocation]);
 
-  console.log({ gameId });
-
   return (
-    <Context.Provider value={{ id: gameId, phase }}>
+    <GameContext.Provider value={{ id: gameId, phase, setPhase }}>
       <Layout>
         <Header />
         <Content />
         <Deck />
       </Layout>
-    </Context.Provider>
+    </GameContext.Provider>
   );
 };
