@@ -5,10 +5,10 @@
 - Front-end
   - Create React App
   - TypeScript
-  - window.location
+  - wouter
   - React Context
   - CSS modules
-  - hashids
+  - nanoid
   - ...
 - Back-end
   - node.js
@@ -16,3 +16,7 @@
   - ws (WebSocket)
   - http (node.js)
   - ...
+
+## Legal
+
+Apache-2.0 © 2021 Arthur Corenzan
