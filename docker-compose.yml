@@ -1,0 +1,32 @@
+version: "3"
+services:
+  proxy:
+    image: traefik:2.5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 8080:8080
+      - 80:80
+    command:
+      - --api.insecure=true
+      - --providers.docker.defaultrule=Host(`{{ normalize .Name }}.localhost`)
+  api:
+    build: ./api
+    ports:
+      - 3000
+    volumes:
+      - ./api:/usr/local/src
+    environment:
+      PORT: 3000
+      CI: "true"
+      EXTEND_ESLINT: "true"
+  client:
+    build: ./client
+    ports:
+      - 3000
+    volumes:
+      - ./client:/usr/local/src
+    environment:
+      REACT_APP_API_URL: http://api-planning-poker.localhost
+      CI: "true"
+      EXTEND_ESLINT: "true"
