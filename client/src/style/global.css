@@ -23,6 +23,11 @@ small {
   font-size: 0.75em;
 }
 
+ul,
+ol {
+  list-style: none;
+}
+
 input,
 button,
 select,
