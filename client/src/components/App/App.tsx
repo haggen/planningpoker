@@ -163,7 +163,7 @@ export const App = () => {
   const { gameId } = params ?? {};
 
   const { sendJsonMessage: webSocketDispatch, readyState } = useWebSocket(
-    match ? `ws://localhost:5000/${gameId}` : "",
+    match ? `${process.env.REACT_APP_API_URL}/${gameId}` : "",
     {
       onMessage(event) {
         const action = JSON.parse(event.data);
