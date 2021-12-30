@@ -42,4 +42,4 @@ webSocketServer.on("connection", (ws, req) => {
   });
 });
 
-webServer.listen(parseInt(process.env.PORT ?? "5000", 10));
+webServer.listen(parseInt(process.env.PORT ?? "3000", 10));
