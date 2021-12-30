@@ -1,10 +1,10 @@
 # Planning poker
 
-O front-end é uma aplicação [React](https://reactjs.org/).
+O cliente é uma aplicação [React](https://reactjs.org/).
 
 ![Desenho da aplicação](./screenshot.webp)
 
-Veja também [o back-end](../back-end/README.md).
+Veja também [a API](../api/README.md).
 
 ## Tecnologia
 
