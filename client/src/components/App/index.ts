@@ -1,1 +1,2 @@
-export { App, GamePhase, useGameState, promptPlayerName } from "./App";
+export { App, promptPlayerName } from "./App";
+export { GamePhase, useGameState } from "./state";
