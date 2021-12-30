@@ -1,5 +1,6 @@
 .button {
   align-items: center;
+  border-radius: 2.5rem;
   cursor: pointer;
   display: flex;
   font-weight: 700;
@@ -9,7 +10,6 @@
 
 .default {
   background-color: var(--color-primary);
-  border-radius: 2.5rem;
   color: #fff;
 }
 
