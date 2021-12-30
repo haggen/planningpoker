@@ -21,7 +21,7 @@ webServer.on("upgrade", (req, socket, head) => {
 webSocketServer.on("connection", (ws, req) => {
   const { pathname } = new URL(req.url ?? "/", "http://localhost/");
 
-  console.log(`client connected from channel ${pathname}`);
+  console.log(`client connected to channel ${pathname}`);
 
   const channel = app.getChannel(pathname);
   const client = channel.addClient(ws);
