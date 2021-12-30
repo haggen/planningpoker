@@ -27,6 +27,6 @@ services:
     volumes:
       - ./client:/usr/local/src
     environment:
-      REACT_APP_API_URL: http://api-planning-poker.localhost
+      REACT_APP_API_URL: ws://api-planning-poker.localhost
       CI: "true"
       EXTEND_ESLINT: "true"
