@@ -3,6 +3,12 @@
   display: revert; /* Revert to browser's default. */
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #root {
