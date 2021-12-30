@@ -2,7 +2,7 @@
 
 > Ferramenta de planning poker gratuita e open-source.
 
-![Desenho do projeto.](./screenshot.webp)
+![Desenho da aplicação](./front-end/screenshot.webp)
 
 Entenda e acompanhe pelo [Figma](https://www.figma.com/file/XhgXti6IjO5nrFVCA2hs0G/Poker-planning).
 
