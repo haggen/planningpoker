@@ -2,19 +2,31 @@
 
 > Ferramenta de planning poker gratuita e open-source.
 
-![Desenho da aplicação](./front-end/screenshot.webp)
+![Desenho da aplicação](./client/screenshot.webp)
 
 Entenda e acompanhe pelo [Figma](https://www.figma.com/file/XhgXti6IjO5nrFVCA2hs0G/Poker-planning).
 
-O projeto é divido em 2 partes; front-end e back-end.
+## Desenvolvimento
 
-## Front-end
+Com Docker e Docker Compose instalados, rode;
 
-É uma aplicação React. [Leia mais](./front-end).
+```sh
+$ docker-compose up
+```
 
-## Back-end
+Usando o **Chrome** acesse:
 
-É um servidor WebSocket. [Leia mais](./back-end).
+- http://client-planning-poker.localhost
+
+⚠️ O Chrome responde automaticamente a subdomínios de localhost. Caso esteja utilizando outro navegador você tem 2 opções; usar a porta designada ao container do cliente ou configurar um DNS local para substituir o recurso do Chrome.
+
+### Cliente
+
+É uma aplicação React. [Leia mais](./client).
+
+### API
+
+É um servidor WebSocket. [Leia mais](./api).
 
 ## Licença
 
