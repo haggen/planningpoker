@@ -2,6 +2,8 @@ import { WebSocket } from "ws";
 
 type Action<T = unknown> = { type: string; payload: T };
 
+const SyncActionType = "sync";
+
 export class App {
   channels: Record<string, Channel> = {};
 
@@ -63,11 +65,11 @@ class Channel {
   }
 
   requestSync() {
-    this.freshClients[0].send({ type: "sync" });
+    this.freshClients[0].send({ type: SyncActionType });
   }
 
   handleAction(action: Action, sender: Client) {
-    if (action.type === "sync") {
+    if (action.type === SyncActionType) {
       this.broadcast(action, this.staleClients);
       this.freshClients.push(...this.staleClients);
       this.staleClients = [];
