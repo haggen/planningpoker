@@ -19,12 +19,9 @@ const createPlayerId = () => {
   return nanoid(10);
 };
 
-export const promptPlayerName = () => {
-  const name = prompt("Qual seu nome?");
-  if (name) {
-    return name;
-  }
-  return "Anônimo";
+const usePlayerId = () => {
+  const [playerId] = useStoredState("playerId", createPlayerId);
+  return playerId;
 };
 
 const useGameId = () => {
@@ -42,12 +39,18 @@ const useGameId = () => {
   return gameId;
 };
 
+export const promptPlayerName = () => {
+  const name = prompt("Qual seu nome?");
+  if (name) {
+    return name;
+  }
+  return "Anônimo";
+};
+
 export const App = () => {
   const gameId = useGameId();
-  const [playerId] = useStoredState("playerId", createPlayerId);
+  const playerId = usePlayerId();
   const [state, reducerDispatch] = useGameStateReducer();
-
-  console.log({ gameId });
 
   const { sendJsonMessage: webSocketDispatch, readyState } = useWebSocket(
     gameId ? `${process.env.REACT_APP_API_URL}/${gameId}` : "",
