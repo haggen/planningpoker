@@ -1,55 +1,59 @@
-import { createContext, Dispatch, useContext, useReducer } from "react";
+import { createContext, Dispatch, useContext } from "react";
 import update from "immutability-helper";
 
-export enum GamePhase {
+export enum Phase {
   Voting,
   Reveal,
 }
 
-type Player = {
+export type Player = {
   id: string;
   name: string;
   vote: string;
+  createdAt: number;
 };
 
 type State = {
-  phase: GamePhase;
+  phase: Phase;
   players: Player[];
 };
 
 type Value = State & {
-  id: string | undefined;
-  currentPlayer: Player | undefined;
+  gameId: string | undefined;
+  isConnected: boolean;
+  playerId: string | undefined;
   dispatch: Dispatch<Action>;
 };
 
 export type Action =
   | {
-      type: "reveal";
+      type: "game/reveal";
     }
   | {
-      type: "restart";
+      type: "game/restart";
     }
   | {
-      type: "changePlayerVote";
+      type: "player/vote";
       payload: {
         id: string;
         vote: string;
       };
     }
   | {
-      type: "changePlayerName";
+      type: "player/rename";
       payload: {
         id: string;
         name: string;
       };
     }
   | {
-      type: "addPlayer";
+      type: "player/add";
+      payload: Player;
+    }
+  | {
+      type: "player/remove";
       payload: {
         id: string;
-        name: string;
-        vote: string;
       };
     }
   | {
@@ -57,14 +61,15 @@ export type Action =
       payload?: State;
     };
 
-const defaultState = {
-  phase: GamePhase.Voting,
+export const defaultState = {
+  phase: Phase.Voting,
   players: [],
 };
 
 export const Context = createContext<Value>({
-  id: undefined,
-  currentPlayer: undefined,
+  isConnected: false,
+  gameId: undefined,
+  playerId: undefined,
   dispatch: () => {},
   ...defaultState,
 });
@@ -73,55 +78,65 @@ export const useGameState = () => {
   return useContext(Context);
 };
 
-const reducer = (state: State, action: Action) => {
-  if (action.type === "reveal") {
-    return update(state, { phase: { $set: GamePhase.Reveal } });
-  } else if (action.type === "sync") {
-    if (!action.payload) {
-      return state;
-    }
-    return update(state, {
-      phase: { $set: action.payload.phase },
-      players: { $push: action.payload.players },
-    });
-  } else if (action.type === "restart") {
-    return update(state, {
-      phase: { $set: GamePhase.Voting },
-      players: {
-        $set: state.players.map((player) => ({ ...player, vote: "" })),
-      },
-    });
-  } else if (action.type === "addPlayer") {
-    return update(state, { players: { $push: [action.payload] } });
-  } else if (action.type === "changePlayerName") {
-    const playerIndex = state.players.findIndex(
-      (player) => player.id === action.payload.id
-    );
-    if (playerIndex < 0) {
-      return state;
-    }
-    return update(state, {
-      players: {
-        [playerIndex]: { name: { $set: action.payload.name } },
-      },
-    });
-  } else if (action.type === "changePlayerVote") {
-    const playerIndex = state.players.findIndex(
-      (player) => player.id === action.payload.id
-    );
-    if (playerIndex < 0) {
-      return state;
-    }
-    return update(state, {
-      players: {
-        [playerIndex]: { vote: { $set: action.payload.vote } },
-      },
-    });
-  } else {
-    return state;
-  }
-};
+export const reducer = (state: State, action: Action) => {
+  let playerIndex;
 
-export const useGameStateReducer = () => {
-  return useReducer(reducer, defaultState);
+  switch (action.type) {
+    case "game/reveal":
+      return update(state, { phase: { $set: Phase.Reveal } });
+    case "sync":
+      if (!action.payload) {
+        return state;
+      }
+      return update(state, {
+        phase: { $set: action.payload.phase },
+        players: { $push: action.payload.players },
+      });
+    case "game/restart":
+      return update(state, {
+        phase: { $set: Phase.Voting },
+        players: {
+          $set: state.players.map((player) => ({ ...player, vote: "" })),
+        },
+      });
+    case "player/add":
+      playerIndex = state.players.findIndex(
+        (player) => player.id === action.payload.id
+      );
+      if (playerIndex > -1) {
+        return state;
+      }
+      return update(state, { players: { $push: [action.payload] } });
+    case "player/remove":
+      return update(state, {
+        players: (players) =>
+          players.filter((player) => player.id !== action.payload.id),
+      });
+    case "player/rename":
+      playerIndex = state.players.findIndex(
+        (player) => player.id === action.payload.id
+      );
+      if (playerIndex < 0) {
+        return state;
+      }
+      return update(state, {
+        players: {
+          [playerIndex]: { name: { $set: action.payload.name } },
+        },
+      });
+    case "player/vote":
+      playerIndex = state.players.findIndex(
+        (player) => player.id === action.payload.id
+      );
+      if (playerIndex < 0) {
+        return state;
+      }
+      return update(state, {
+        players: {
+          [playerIndex]: { vote: { $set: action.payload.vote } },
+        },
+      });
+    default:
+      return state;
+  }
 };

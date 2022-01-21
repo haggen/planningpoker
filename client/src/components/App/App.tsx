@@ -1,27 +1,19 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useLocation, useRoute } from "wouter";
 import { nanoid } from "nanoid";
-import useWebSocket from "react-use-websocket";
 
 import { Layout } from "src/components/Layout";
 import { Header } from "src/components/Header";
 import { Content } from "src/components/Content";
 import { Deck } from "src/components/Deck";
-import { useStoredState } from "src/hooks/useStoredState";
+import { useCurrentPlayer } from "src/hooks/useCurrentPlayer";
+import { useWindowUnload } from "src/hooks/useWindowUnload";
+import { useMultiplayer } from "src/hooks/useMultiplayer";
 
-import { Action, Context, useGameStateReducer } from "./state";
+import { Action, Context, defaultState, reducer } from "./state";
 
 const createGameId = () => {
   return nanoid(10);
-};
-
-const createPlayerId = () => {
-  return nanoid(10);
-};
-
-const usePlayerId = () => {
-  const [playerId] = useStoredState("playerId", createPlayerId);
-  return playerId;
 };
 
 const useGameId = () => {
@@ -49,56 +41,79 @@ export const promptPlayerName = () => {
 
 export const App = () => {
   const gameId = useGameId();
-  const playerId = usePlayerId();
-  const [state, reducerDispatch] = useGameStateReducer();
+  const [player, setPlayer] = useCurrentPlayer();
+  const [state, dispatch] = useReducer(reducer, defaultState);
 
-  const { sendJsonMessage: webSocketDispatch, readyState } = useWebSocket(
-    gameId ? `${process.env.REACT_APP_API_URL}/${gameId}` : "",
-    {
-      onMessage(event) {
-        const action = JSON.parse(event.data);
-        if (action.type === "sync" && !action.payload) {
-          webSocketDispatch({ type: "sync", payload: state });
-        }
-        reducerDispatch(action);
-      },
-    }
-  );
-
-  const { players } = state;
-  const currentPlayer = players.find((player) => player.id === playerId);
-
-  const dispatch = useCallback(
-    (action: Action) => {
-      reducerDispatch(action);
-      webSocketDispatch(action);
+  const [isConnected, broadcast] = useMultiplayer<Action>({
+    channel: player ? gameId : undefined,
+    onIncoming(action) {
+      if (action.type === "sync" && !action.payload) {
+        broadcast({ type: "sync", payload: state });
+      } else {
+        dispatch(action);
+      }
     },
-    [webSocketDispatch]
+  });
+
+  const dispatchAndBroadcast = useCallback(
+    (action: Action) => {
+      dispatch(action);
+      broadcast(action);
+    },
+    [broadcast]
   );
 
   useEffect(() => {
-    if (!playerId) {
+    if (!player) {
       return;
     }
 
-    if (readyState !== WebSocket.OPEN) {
+    if (!isConnected) {
       return;
     }
 
-    if (!currentPlayer) {
-      dispatch({
-        type: "addPlayer",
-        payload: {
-          id: playerId,
-          name: promptPlayerName(),
-          vote: "",
-        },
-      });
+    if (state.players.length > 0) {
+      return;
     }
-  }, [readyState, playerId, currentPlayer, dispatch]);
+
+    dispatchAndBroadcast({
+      type: "player/add",
+      payload: player,
+    });
+  }, [player, state, dispatchAndBroadcast, isConnected]);
+
+  useWindowUnload(() => {
+    if (!player) {
+      return;
+    }
+
+    if (!isConnected) {
+      return;
+    }
+
+    dispatchAndBroadcast({ type: "player/remove", payload: { id: player.id } });
+  });
+
+  useEffect(() => {
+    if (player) {
+      return;
+    }
+    setPlayer({ name: promptPlayerName() });
+  }, [player, setPlayer]);
+
+  const contextValue = useMemo(
+    () => ({
+      ...state,
+      isConnected,
+      playerId: player?.id,
+      gameId,
+      dispatch: dispatchAndBroadcast,
+    }),
+    [state, isConnected, player, gameId, dispatchAndBroadcast]
+  );
 
   return (
-    <Context.Provider value={{ id: gameId, currentPlayer, dispatch, ...state }}>
+    <Context.Provider value={contextValue}>
       <Layout>
         <Header />
         <Content />

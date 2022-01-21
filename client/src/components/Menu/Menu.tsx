@@ -1,40 +1,43 @@
 import { Button } from "src/components/Button";
-import { GamePhase, useGameState, promptPlayerName } from "src/components/App";
+import { Phase, useGameState } from "src/components/App";
 
 import styles from "./Menu.module.css";
 
 export const Menu = () => {
-  const { phase, currentPlayer, dispatch } = useGameState();
+  const { phase, playerId, players, dispatch } = useGameState();
+
+  const currentPlayer = players.find(({ id }) => id === playerId);
 
   const handleReveal = () => {
-    dispatch({ type: "reveal" });
+    dispatch({ type: "game/reveal" });
   };
 
   const handleRestart = () => {
-    dispatch({ type: "restart" });
+    dispatch({ type: "game/restart" });
   };
 
-  const handleChangeName = () => {
-    if (!currentPlayer) {
+  const handleRename = () => {
+    if (!playerId) {
       return;
     }
+    const name = prompt("Name:") ?? "Anônimo";
     dispatch({
-      type: "changePlayerName",
-      payload: { id: currentPlayer.id, name: promptPlayerName() },
+      type: "player/rename",
+      payload: { id: playerId, name },
     });
   };
 
   return (
     <ul className={styles.menu}>
       <li>
-        {phase === GamePhase.Voting ? (
+        {phase === Phase.Voting ? (
           <Button onClick={handleReveal}>Revelar</Button>
         ) : (
           <Button onClick={handleRestart}>Recomeçar</Button>
         )}
       </li>
       <li>
-        <Button type="ghost" onClick={handleChangeName}>
+        <Button type="ghost" onClick={handleRename}>
           {currentPlayer?.name}
         </Button>
       </li>

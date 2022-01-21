@@ -1,12 +1,23 @@
 import { useEffect, useState } from "react";
 
-export const useStoredState = <T>(key: string, getDefaultValue: () => T) => {
-  const [state, setState] = useState(() => {
+type Initializer<T> = T extends Function ? never : T | (() => T);
+
+/**
+ * Use persistent state via local storage.
+ */
+export const useStoredState = <T>(
+  key: string,
+  defaultValue: Initializer<T>
+) => {
+  const [state, setState] = useState<T>(() => {
     const storedValue = localStorage.getItem(key);
     if (storedValue) {
       return JSON.parse(storedValue);
     }
-    return getDefaultValue();
+    if (typeof defaultValue === "function") {
+      return defaultValue();
+    }
+    return defaultValue;
   });
 
   useEffect(() => {

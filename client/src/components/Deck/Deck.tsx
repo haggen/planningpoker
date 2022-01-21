@@ -3,18 +3,16 @@ import { useGameState } from "src/components/App";
 
 import styles from "./Deck.module.css";
 
-// type DeckProps = {};
-
 export const Deck = () => {
-  const { currentPlayer, dispatch } = useGameState();
+  const { playerId, dispatch } = useGameState();
 
   const handleVote = (value: string) => {
-    if (!currentPlayer) {
+    if (!playerId) {
       return;
     }
     dispatch({
-      type: "changePlayerVote",
-      payload: { id: currentPlayer.id, vote: value },
+      type: "player/vote",
+      payload: { id: playerId, vote: value },
     });
   };
 
