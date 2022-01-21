@@ -1,4 +1,6 @@
-* {
+@namespace svg "http://www.w3.org/2000/svg";
+
+:not(svg|*) {
   all: unset; /* Use initial spec values. */
   display: revert; /* Revert to browser's default. */
 }
