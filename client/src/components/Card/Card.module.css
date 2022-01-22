@@ -5,10 +5,9 @@
   color: var(--color-black);
   cursor: pointer;
   display: flex;
-  font-size: 1.5rem;
+  font: 200 1.5rem/1 Roboto Mono, monospace;
   height: 5.25rem;
   justify-content: center;
-  line-height: 1;
   width: 3.5rem;
 }
 

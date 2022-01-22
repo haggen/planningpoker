@@ -6,6 +6,7 @@
 }
 
 .name {
+  font-weight: bold;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

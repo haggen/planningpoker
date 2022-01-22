@@ -1,7 +1,7 @@
 import { useGameState, Phase } from "src/components/App";
 
-import { ReactComponent as CheckMark } from "src/images/checkMark.svg";
-import { ReactComponent as Hourglass } from "src/images/hourglass.svg";
+import { ReactComponent as Check } from "./Check.svg";
+import { ReactComponent as Hourglass } from "./Hourglass.svg";
 
 import styles from "./Player.module.css";
 
@@ -18,7 +18,7 @@ export const Player = ({ name, vote }: PlayerProps) => {
       <span className={styles.vote}>
         {phase === Phase.Voting ? (
           vote ? (
-            <CheckMark />
+            <Check />
           ) : (
             <Hourglass />
           )

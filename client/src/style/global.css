@@ -18,10 +18,10 @@ body,
 }
 
 html {
-  --color-primary: hsl(250, 100%, 69%);
-  --color-primary-pale: hsl(248, 100%, 97%);
-  --color-black: hsl(0, 0%, 20%);
-  --color-black-pale: hsl(0, 0%, 92%);
+  --color-primary: #5540bf;
+  --color-primary-pale: #eeebff;
+  --color-black: #33333f;
+  --color-black-pale: #efeff0;
 
   -webkit-tap-highlight-color: transparent;
   font: 16px/1.5 Roboto, sans-serif;
