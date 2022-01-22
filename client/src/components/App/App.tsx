@@ -12,7 +12,6 @@ import {
   Context,
   defaultState,
   getSavedPlayerData,
-  Player,
   reducer,
   savePlayerData,
   useGameId,
