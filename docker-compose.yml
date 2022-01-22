@@ -11,22 +11,16 @@ services:
       - --api.insecure=true
       - --providers.docker.defaultrule=Host(`{{ normalize .Name }}.localhost`)
   api:
-    image: node:16-alpine
-    ports:
-      - 3000
+    build: .
     volumes:
       - ./api:/usr/local/src
-    working_dir: /usr/local/src
     environment:
       PORT: 3000
     command: npm run-script start
   client:
-    image: node:16-alpine
-    ports:
-      - 3000
+    build: .
     volumes:
       - ./client:/usr/local/src
-    working_dir: /usr/local/src
     environment:
       REACT_APP_API_URL: ws://api-planning-poker.localhost
       WDS_SOCKET_PORT: 80

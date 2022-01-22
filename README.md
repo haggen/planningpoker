@@ -18,7 +18,7 @@ Usando o **Chrome** acesse:
 
 - http://client-planning-poker.localhost
 
-⚠️ O Chrome responde automaticamente a subdomínios de localhost. Caso esteja utilizando outro navegador você tem 2 opções; usar a porta designada ao container do cliente ou configurar um DNS local para substituir o recurso do Chrome.
+⚠️ O Chrome responde automaticamente a subdomínios de localhost. Caso esteja utilizando outro navegador você tem 2 opções; acessar http://localhost an porta designada ao container do cliente ou configurar um DNS local para responder a `client-planning-poker.localhost` o recurso do Chrome.
 
 ### Cliente
 

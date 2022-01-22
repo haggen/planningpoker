@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "prestart": "test -d node_modules || npm ci",
     "start": "ts-node-dev src/index.ts"
   },
   "author": "Arthur <arthur@corenzan.com>",
