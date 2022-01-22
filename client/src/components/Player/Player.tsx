@@ -1,4 +1,4 @@
-import { useGameState, Phase } from "src/components/App";
+import { useGameState, Phase, Player as PlayerType } from "src/components/App";
 
 import { ReactComponent as Check } from "./Check.svg";
 import { ReactComponent as Hourglass } from "./Hourglass.svg";
@@ -7,7 +7,7 @@ import styles from "./Player.module.css";
 
 type PlayerProps = {
   name: string;
-  vote: string | undefined;
+  vote: PlayerType["vote"];
 };
 
 export const Player = ({ name, vote }: PlayerProps) => {
@@ -17,13 +17,13 @@ export const Player = ({ name, vote }: PlayerProps) => {
     <div className={styles.player}>
       <span className={styles.vote}>
         {phase === Phase.Voting ? (
-          vote ? (
-            <Check />
-          ) : (
+          vote === undefined ? (
             <Hourglass />
+          ) : (
+            <Check />
           )
         ) : (
-          vote || "-"
+          vote ?? "-"
         )}
       </span>
       <span className={styles.name}>{name}</span>

@@ -1,18 +1,27 @@
+import c from "classnames";
+
+import { Player } from "src/components/App";
+
 import styles from "./Card.module.css";
 
 type CardProps = {
-  value: string;
-  onVote: (value: string) => void;
+  text: string;
+  value: Player["vote"];
+  active: boolean;
+  onVote: (vote: Player["vote"]) => void;
 };
 
-export const Card = ({ value, onVote }: CardProps) => {
+export const Card = ({ text, value, active, onVote }: CardProps) => {
   const handleClick = () => {
     onVote(value);
   };
 
   return (
-    <button className={styles.card} onClick={handleClick}>
-      {value}
+    <button
+      className={c(styles.card, { [styles.active]: active })}
+      onClick={handleClick}
+    >
+      {text}
     </button>
   );
 };

@@ -11,7 +11,7 @@ export enum Phase {
 export type Player = {
   id: string;
   name: string;
-  vote: string;
+  vote: undefined | number | "?";
   createdAt: number;
 };
 
@@ -48,7 +48,7 @@ export type Action =
       type: "player/vote";
       payload: {
         id: string;
-        vote: string;
+        vote: Player["vote"];
       };
     }
   | {
@@ -104,7 +104,7 @@ export const getSavedPlayerData = () => {
   return {
     id: createPlayerId(),
     name: promptPlayerName(),
-    vote: "",
+    vote: undefined,
     createdAt: Date.now(),
   };
 };
@@ -148,7 +148,7 @@ export const reducer = (state: State, action: Action) => {
       return update(state, {
         phase: { $set: Phase.Voting },
         players: {
-          $map: (player) => ({ ...player, vote: "" }),
+          $map: (player) => ({ ...player, vote: undefined }),
         },
       });
     case "player/add":

@@ -11,7 +11,7 @@
   width: 3.5rem;
 }
 
-.card:focus,
+.card.active,
 .card:hover {
   background-color: var(--color-primary-pale);
   color: var(--color-primary);
