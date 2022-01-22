@@ -4,10 +4,9 @@ import { useGameState } from "src/components/App";
 import styles from "./Deck.module.css";
 
 export const Deck = () => {
-  const {
-    players: [player],
-    dispatch,
-  } = useGameState();
+  const { playerId, players, dispatch } = useGameState();
+
+  const player = players[playerId];
 
   const handleVote = (value: string) => {
     if (!player) {

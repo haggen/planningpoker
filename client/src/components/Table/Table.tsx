@@ -8,7 +8,7 @@ export const Table = () => {
 
   return (
     <ul className={styles.table}>
-      {players.map(({ id, name, vote }) => (
+      {Object.values(players).map(({ id, name, vote }) => (
         <li key={id}>
           <Player name={name} vote={vote} />
         </li>

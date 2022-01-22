@@ -12,6 +12,7 @@ import {
   Context,
   defaultState,
   getSavedPlayerData,
+  Player,
   reducer,
   savePlayerData,
   useGameId,
@@ -21,7 +22,7 @@ export const App = () => {
   const gameId = useGameId();
   const [state, dispatch] = useReducer(reducer, defaultState);
 
-  const { players } = state;
+  const { playerId, players } = state;
 
   const [isConnected, broadcast] = useMultiplayer<Action>({
     channel: gameId,
@@ -41,7 +42,7 @@ export const App = () => {
     if (!isConnected) {
       return;
     }
-    if (players.length > 0) {
+    if (Object.keys(players).length > 0) {
       return;
     }
 
@@ -51,20 +52,23 @@ export const App = () => {
       type: "player/add",
       payload: player,
     });
-  }, [broadcast, isConnected, players.length]);
+  }, [broadcast, isConnected, players]);
 
   useEffect(() => {
-    if (players.length === 0) {
+    if (Object.keys(players).length === 0) {
       return;
     }
-    savePlayerData(players[0]);
-  }, [players]);
+    if (!playerId || !players[playerId]) {
+      return;
+    }
+    savePlayerData(players[playerId]);
+  }, [playerId, players]);
 
   useWindowUnload(() => {
     if (!isConnected) {
       return;
     }
-    broadcast({ type: "player/remove", payload: { id: players[0].id } });
+    broadcast({ type: "player/remove", payload: { id: playerId } });
   });
 
   const contextValue = useMemo(

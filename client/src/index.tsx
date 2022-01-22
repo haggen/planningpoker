@@ -3,16 +3,8 @@ import { render } from "react-dom";
 
 import "src/style/global.css";
 
+import "src/lib/immutabilityHelpers";
 import { App } from "src/components/App";
-
-import { extend } from "immutability-helper";
-
-extend(
-  "$filter",
-  function (filter: (value: unknown) => boolean, value: unknown[]) {
-    return value.filter(filter);
-  }
-);
 
 render(
   <StrictMode>

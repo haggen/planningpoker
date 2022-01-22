@@ -17,7 +17,8 @@ export type Player = {
 
 type State = {
   phase: Phase;
-  players: Player[];
+  playerId: string;
+  players: Record<string, Player>;
 };
 
 type Value = State & {
@@ -66,10 +67,6 @@ const createGameId = () => {
   return nanoid(10);
 };
 
-const createPlayerId = () => {
-  return nanoid(10);
-};
-
 export const useGameId = () => {
   const [match, params] = useRoute("/:gameId");
   const [, setLocation] = useLocation();
@@ -83,6 +80,10 @@ export const useGameId = () => {
   }, [match, setLocation]);
 
   return gameId;
+};
+
+const createPlayerId = () => {
+  return nanoid(10);
 };
 
 export const promptPlayerName = () => {
@@ -112,9 +113,10 @@ export const savePlayerData = (player: Player) => {
   localStorage.setItem(playerDataKey, JSON.stringify(player));
 };
 
-export const defaultState = {
+export const defaultState: State = {
   phase: Phase.Voting,
-  players: [],
+  playerId: "",
+  players: {},
 };
 
 export const Context = createContext<Value>({
@@ -129,71 +131,45 @@ export const useGameState = () => {
 };
 
 export const reducer = (state: State, action: Action) => {
-  let playerIndex;
-
   console.log(action);
 
   switch (action.type) {
-    case "game/reveal":
-      return update(state, { phase: { $set: Phase.Reveal } });
     case "sync":
       if (!action.payload) {
         return state;
       }
       return update(state, {
         phase: { $set: action.payload.phase },
-        players: (players) => {
-          action.payload?.players.forEach((player) => {
-            const index = players.findIndex(({ id }) => id === player.id);
-            if (index === -1) {
-              players.push(player);
-            }
-          });
-          return players;
-        },
+        players: { $merge: action.payload.players },
       });
+    case "game/reveal":
+      return update(state, { phase: { $set: Phase.Reveal } });
     case "game/restart":
       return update(state, {
         phase: { $set: Phase.Voting },
         players: {
-          $set: state.players.map((player) => ({ ...player, vote: "" })),
+          $map: (player) => ({ ...player, vote: "" }),
         },
       });
     case "player/add":
-      playerIndex = state.players.findIndex(
-        (player) => player.id === action.payload.id
-      );
-      if (playerIndex > -1) {
-        return state;
-      }
-      return update(state, { players: { $push: [action.payload] } });
+      return update(state, {
+        playerId: (playerId) => playerId || action.payload.id,
+        players: { $merge: { [action.payload.id]: action.payload } },
+      });
     case "player/remove":
       return update(state, {
-        players: (players) =>
-          players.filter((player) => player.id !== action.payload.id),
+        players: { $unset: [action.payload.id] },
       });
     case "player/rename":
-      playerIndex = state.players.findIndex(
-        (player) => player.id === action.payload.id
-      );
-      if (playerIndex < 0) {
-        return state;
-      }
       return update(state, {
         players: {
-          [playerIndex]: { name: { $set: action.payload.name } },
+          [action.payload.id]: { name: { $set: action.payload.name } },
         },
       });
     case "player/vote":
-      playerIndex = state.players.findIndex(
-        (player) => player.id === action.payload.id
-      );
-      if (playerIndex < 0) {
-        return state;
-      }
       return update(state, {
         players: {
-          [playerIndex]: { vote: { $set: action.payload.vote } },
+          [action.payload.id]: { vote: { $set: action.payload.vote } },
         },
       });
     default:

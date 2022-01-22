@@ -5,11 +5,9 @@ import styles from "./Menu.module.css";
 import { promptPlayerName } from "../App/state";
 
 export const Menu = () => {
-  const {
-    phase,
-    players: [player],
-    dispatch,
-  } = useGameState();
+  const { phase, playerId, players, dispatch } = useGameState();
+
+  const player = players[playerId];
 
   const handleReveal = () => {
     dispatch({ type: "game/reveal" });

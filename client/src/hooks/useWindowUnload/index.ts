@@ -10,9 +10,9 @@ export const useWindowUnload = (callback: () => void) => {
     const handler = () => {
       callbackRef.current?.();
     };
-    window.addEventListener("unload", handler);
+    window.addEventListener("beforeunload", handler);
     return () => {
-      window.removeEventListener("unload", handler);
+      window.removeEventListener("beforeunload", handler);
     };
   }, []);
 
