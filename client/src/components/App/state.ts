@@ -1,5 +1,7 @@
-import { createContext, Dispatch, useContext } from "react";
+import { createContext, Dispatch, useContext, useEffect } from "react";
 import update from "immutability-helper";
+import { useLocation, useRoute } from "wouter";
+import { nanoid } from "nanoid";
 
 export enum Phase {
   Voting,
@@ -21,7 +23,6 @@ type State = {
 type Value = State & {
   gameId: string | undefined;
   isConnected: boolean;
-  playerId: string | undefined;
   dispatch: Dispatch<Action>;
 };
 
@@ -31,6 +32,16 @@ export type Action =
     }
   | {
       type: "game/restart";
+    }
+  | {
+      type: "player/add";
+      payload: Player;
+    }
+  | {
+      type: "player/remove";
+      payload: {
+        id: string;
+      };
     }
   | {
       type: "player/vote";
@@ -47,19 +58,59 @@ export type Action =
       };
     }
   | {
-      type: "player/add";
-      payload: Player;
-    }
-  | {
-      type: "player/remove";
-      payload: {
-        id: string;
-      };
-    }
-  | {
       type: "sync";
       payload?: State;
     };
+
+const createGameId = () => {
+  return nanoid(10);
+};
+
+const createPlayerId = () => {
+  return nanoid(10);
+};
+
+export const useGameId = () => {
+  const [match, params] = useRoute("/:gameId");
+  const [, setLocation] = useLocation();
+
+  const { gameId } = params ?? {};
+
+  useEffect(() => {
+    if (!match) {
+      setLocation("/" + createGameId(), { replace: true });
+    }
+  }, [match, setLocation]);
+
+  return gameId;
+};
+
+export const promptPlayerName = () => {
+  const name = prompt("Qual seu nome?");
+  if (name) {
+    return name;
+  }
+  return "Anônimo";
+};
+
+const playerDataKey = "player";
+
+export const getSavedPlayerData = () => {
+  const profile = localStorage.getItem(playerDataKey);
+  if (profile) {
+    return JSON.parse(profile);
+  }
+  return {
+    id: createPlayerId(),
+    name: promptPlayerName(),
+    vote: "",
+    createdAt: Date.now(),
+  };
+};
+
+export const savePlayerData = (player: Player) => {
+  localStorage.setItem(playerDataKey, JSON.stringify(player));
+};
 
 export const defaultState = {
   phase: Phase.Voting,
@@ -67,9 +118,8 @@ export const defaultState = {
 };
 
 export const Context = createContext<Value>({
-  isConnected: false,
   gameId: undefined,
-  playerId: undefined,
+  isConnected: false,
   dispatch: () => {},
   ...defaultState,
 });
@@ -81,6 +131,8 @@ export const useGameState = () => {
 export const reducer = (state: State, action: Action) => {
   let playerIndex;
 
+  console.log(action);
+
   switch (action.type) {
     case "game/reveal":
       return update(state, { phase: { $set: Phase.Reveal } });
@@ -90,7 +142,15 @@ export const reducer = (state: State, action: Action) => {
       }
       return update(state, {
         phase: { $set: action.payload.phase },
-        players: { $push: action.payload.players },
+        players: (players) => {
+          action.payload?.players.forEach((player) => {
+            const index = players.findIndex(({ id }) => id === player.id);
+            if (index === -1) {
+              players.push(player);
+            }
+          });
+          return players;
+        },
       });
     case "game/restart":
       return update(state, {

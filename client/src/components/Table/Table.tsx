@@ -3,8 +3,6 @@ import { useGameState } from "src/components/App";
 
 import styles from "./Table.module.css";
 
-// type TableProps = {};
-
 export const Table = () => {
   const { players } = useGameState();
 

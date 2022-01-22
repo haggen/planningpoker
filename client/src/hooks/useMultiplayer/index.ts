@@ -4,6 +4,7 @@ import { useWebSocket } from "src/hooks/useWebSocket";
 type Config<T> = {
   channel: string | undefined;
   onIncoming: (action: T) => void;
+  onOutgoing: (action: T) => void;
 };
 
 /**
@@ -11,14 +12,15 @@ type Config<T> = {
  */
 export const useMultiplayer = <T>({
   channel,
-  onIncoming: onAction,
+  onIncoming,
+  onOutgoing,
 }: Config<T>) => {
   const [readyState, dispatch] = useWebSocket(
     channel ? `${process.env.REACT_APP_API_URL}/${channel}` : "",
     {
       onMessage(event) {
         try {
-          onAction(JSON.parse(event.data));
+          onIncoming(JSON.parse(event.data));
         } catch (e) {
           console.error("Error decoding incoming action", e);
         }
@@ -29,15 +31,14 @@ export const useMultiplayer = <T>({
   const broadcast = useCallback(
     (action: T) => {
       try {
+        onOutgoing(action);
         dispatch(JSON.stringify(action));
       } catch (e) {
         console.error("Error encoding outgoing action", e);
       }
     },
-    [dispatch]
+    [dispatch, onOutgoing]
   );
 
-  const isConnected = readyState === WebSocket.OPEN;
-
-  return [isConnected, broadcast] as const;
+  return [readyState === WebSocket.OPEN, broadcast] as const;
 };
