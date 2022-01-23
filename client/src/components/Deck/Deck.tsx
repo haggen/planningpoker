@@ -1,5 +1,5 @@
 import { Card } from "src/components/Card";
-import { useGameState, Player } from "src/components/App";
+import { useGameState, Player, Phase } from "src/components/App";
 
 import styles from "./Deck.module.css";
 
@@ -18,8 +18,20 @@ const options = [
   { text: "?", value: "?" as const },
 ];
 
+const Average = ({ votes }: { votes: Player["vote"][] }) => {
+  const valid = votes.filter(
+    (vote): vote is number => typeof vote === "number"
+  );
+  const average = valid.reduce((sum, vote) => sum + vote, 0) / valid.length;
+  return (
+    <p className={styles.average}>
+      {isNaN(average) ? "-" : average.toFixed(1)}
+    </p>
+  );
+};
+
 export const Deck = () => {
-  const { playerId, players, dispatch } = useGameState();
+  const { phase, playerId, players, dispatch } = useGameState();
 
   const player = players[playerId];
 
@@ -32,6 +44,10 @@ export const Deck = () => {
       payload: { id: player.id, vote: vote === player.vote ? undefined : vote },
     });
   };
+
+  if (phase === Phase.Reveal) {
+    return <Average votes={Object.values(players).map(({ vote }) => vote)} />;
+  }
 
   return (
     <ul className={styles.deck}>
