@@ -21,7 +21,7 @@ export const Menu = () => {
     if (!player) {
       return;
     }
-    const name = promptPlayerName();
+    const name = promptPlayerName(player.name);
     dispatch({
       type: "player/rename",
       payload: { id: player.id, name },

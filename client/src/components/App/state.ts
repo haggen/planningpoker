@@ -86,8 +86,8 @@ const createPlayerId = () => {
   return nanoid(10);
 };
 
-export const promptPlayerName = () => {
-  const name = prompt("Qual seu nome?");
+export const promptPlayerName = (current?: string) => {
+  const name = prompt("Qual seu nome?", current);
   if (name) {
     return name;
   }
