@@ -169,7 +169,14 @@ export const reducer = (state: State, action: Action) => {
     case "player/vote":
       return update(state, {
         players: {
-          [action.payload.id]: { vote: { $set: action.payload.vote } },
+          [action.payload.id]: {
+            vote: {
+              $set:
+                action.payload.vote === state.players[action.payload.id].vote
+                  ? undefined
+                  : action.payload.vote,
+            },
+          },
         },
       });
     default:
