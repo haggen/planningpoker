@@ -1,5 +1,6 @@
 .brand {
   border-radius: 0.25rem;
+  cursor: pointer;
   display: block;
   height: 3.75rem;
   width: 3.75rem;
