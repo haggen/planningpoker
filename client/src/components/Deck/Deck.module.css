@@ -1,24 +1,8 @@
-.deck,
-.average {
-  bottom: 0;
-  display: flex;
-  height: 6rem;
-  justify-content: center;
-  position: sticky;
-}
-
 .deck {
   align-items: stretch;
+  display: flex;
   gap: 1rem;
-  overflow-x: scroll;
-  scrollbar-width: 0;
-}
-
-.deck::-webkit-scrollbar {
-  display: none;
-}
-
-.average {
-  align-items: center;
-  font: 200 1.75rem/1 "Roboto Mono", monospace;
+  justify-content: center;
+  min-width: min-content;
+  width: 100%;
 }

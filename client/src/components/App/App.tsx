@@ -3,7 +3,7 @@ import { useEffect, useMemo, useReducer } from "react";
 import { Layout } from "src/components/Layout";
 import { Header } from "src/components/Header";
 import { Content } from "src/components/Content";
-import { Deck } from "src/components/Deck";
+import { Footer } from "src/components/Footer";
 import { useWindowUnload } from "src/hooks/useWindowUnload";
 import { useMultiplayer } from "src/hooks/useMultiplayer";
 
@@ -85,7 +85,7 @@ export const App = () => {
       <Layout>
         <Header />
         <Content />
-        <Deck />
+        <Footer />
       </Layout>
     </Context.Provider>
   );

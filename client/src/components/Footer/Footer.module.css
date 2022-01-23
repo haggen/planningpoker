@@ -1,0 +1,19 @@
+.footer {
+  bottom: 0;
+  display: flex;
+  overflow-y: visible;
+  overflow-x: scroll;
+  padding: 2rem;
+  position: sticky;
+  scrollbar-width: 0;
+}
+
+@media (width >= 768px) {
+  .footer {
+    padding: 4rem;
+  }
+}
+
+.footer::-webkit-scrollbar {
+  display: none;
+}
