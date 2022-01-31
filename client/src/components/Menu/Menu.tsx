@@ -3,6 +3,7 @@ import { Phase, useGameState } from "src/components/App";
 
 import styles from "./Menu.module.css";
 import { promptPlayerName } from "../App/state";
+import { DelayedButton } from "../DelayedButton";
 
 export const Menu = () => {
   const { phase, playerId, players, dispatch } = useGameState();
@@ -32,7 +33,9 @@ export const Menu = () => {
     <ul className={styles.menu}>
       <li>
         {phase === Phase.Voting ? (
-          <Button onClick={handleReveal}>Revelar</Button>
+          <DelayedButton delay={3} onClick={handleReveal}>
+            Revelar
+          </DelayedButton>
         ) : (
           <Button onClick={handleRestart}>Recomeçar</Button>
         )}
