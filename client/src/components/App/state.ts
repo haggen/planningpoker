@@ -91,7 +91,7 @@ export const promptPlayerName = (current?: string) => {
   if (name) {
     return name;
   }
-  return "Anônimo";
+  return current ?? "Anônimo";
 };
 
 const playerDataKey = "player";
