@@ -16,14 +16,12 @@ export const Player = ({ name, vote }: PlayerProps) => {
   return (
     <div className={styles.player}>
       <span className={styles.vote}>
-        {phase === Phase.Voting ? (
-          vote === undefined ? (
-            <Hourglass />
-          ) : (
-            <Check />
-          )
-        ) : (
+        {phase === Phase.Reveal ? (
           vote ?? "-"
+        ) : vote === undefined ? (
+          <Hourglass />
+        ) : (
+          <Check />
         )}
       </span>
       <span className={styles.name}>{name}</span>

@@ -15,13 +15,15 @@ import {
   reducer,
   savePlayerData,
   useGameId,
+  Phase,
+  timeToReveal,
 } from "./state";
 
 export const App = () => {
   const gameId = useGameId();
   const [state, dispatch] = useReducer(reducer, defaultState);
 
-  const { playerId, players } = state;
+  const { playerId, players, phase } = state;
 
   const [isConnected, broadcast] = useMultiplayer<Action>({
     channel: gameId,
@@ -62,6 +64,18 @@ export const App = () => {
     }
     savePlayerData(players[playerId]);
   }, [playerId, players]);
+
+  useEffect(() => {
+    if (phase !== Phase.Countdown) {
+      return;
+    }
+    const id = setTimeout(() => {
+      dispatch({ type: "game/reveal" });
+    }, timeToReveal);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [dispatch, phase]);
 
   useWindowUnload(() => {
     if (!isConnected) {

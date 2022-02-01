@@ -1,3 +1,3 @@
 export { App } from "./App";
-export { Phase, useGameState } from "./state";
+export { Phase, useGameState, promptPlayerName, timeToReveal } from "./state";
 export type { Player } from "./state";

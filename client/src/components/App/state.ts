@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 
 export enum Phase {
   Voting,
+  Countdown,
   Reveal,
 }
 
@@ -94,6 +95,8 @@ export const promptPlayerName = (current?: string) => {
   return current ?? "Anônimo";
 };
 
+export const timeToReveal = 3000;
+
 const playerDataKey = "player";
 
 export const getSavedPlayerData = () => {
@@ -141,7 +144,12 @@ export const reducer = (state: State, action: Action) => {
         players: { $merge: action.payload.players },
       });
     case "game/reveal":
-      return update(state, { phase: { $set: Phase.Reveal } });
+      return update(state, {
+        phase: {
+          $set:
+            state.phase === Phase.Countdown ? Phase.Reveal : Phase.Countdown,
+        },
+      });
     case "game/restart":
       return update(state, {
         phase: { $set: Phase.Voting },

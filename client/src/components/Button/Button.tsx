@@ -4,17 +4,18 @@ import c from "classnames";
 import styles from "./Button.module.css";
 
 type ButtonProps = {
-  type?: "default" | "ghost";
+  appearance?: "default" | "ghost";
   onClick?: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
 };
 
 export const Button = ({
-  type = "default",
+  appearance = "default",
   onClick,
   children,
 }: ButtonProps) => {
-  const className = c(styles.button, styles[type]);
+  const className = c(styles.button, styles[appearance]);
+
   return (
     <button className={className} onClick={onClick}>
       {children}

@@ -9,7 +9,7 @@ export const Footer = () => {
 
   return (
     <footer className={styles.footer}>
-      {phase === Phase.Voting ? <Deck /> : <Average />}
+      {phase === Phase.Reveal ? <Average /> : <Deck />}
     </footer>
   );
 };

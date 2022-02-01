@@ -1,9 +1,13 @@
 import { Button } from "src/components/Button";
-import { Phase, useGameState } from "src/components/App";
+import {
+  Phase,
+  useGameState,
+  promptPlayerName,
+  timeToReveal,
+} from "src/components/App";
+import { Countdown } from "src/components/Countdown";
 
 import styles from "./Menu.module.css";
-import { promptPlayerName } from "../App/state";
-import { DelayedButton } from "../DelayedButton";
 
 export const Menu = () => {
   const { phase, playerId, players, dispatch } = useGameState();
@@ -33,15 +37,17 @@ export const Menu = () => {
     <ul className={styles.menu}>
       <li>
         {phase === Phase.Voting ? (
-          <DelayedButton delay={3} onClick={handleReveal}>
-            Revelar
-          </DelayedButton>
+          <Button onClick={handleReveal}>Revelar</Button>
+        ) : phase === Phase.Countdown ? (
+          <Button>
+            <Countdown target={Date.now() + timeToReveal} />
+          </Button>
         ) : (
           <Button onClick={handleRestart}>Recomeçar</Button>
         )}
       </li>
       <li>
-        <Button type="ghost" onClick={handleRename}>
+        <Button appearance="ghost" onClick={handleRename}>
           {player?.name}
         </Button>
       </li>
