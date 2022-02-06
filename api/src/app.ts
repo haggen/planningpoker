@@ -61,6 +61,9 @@ export class Channel {
 
   removeClient(client: Client) {
     this.clients = this.clients.filter((c) => c !== client);
+    if (this.freshClients.length === 0) {
+      this.clients[0].stale = false;
+    }
   }
 
   requestStateUpdate() {
