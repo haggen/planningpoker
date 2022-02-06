@@ -1,17 +1,10 @@
-import { WebSocket } from "ws";
-
-type Action<T = unknown> = { type: string; payload: T };
-
-const SyncActionType = "sync";
+export type Action = { type: string };
 
 export class App {
   channels: Record<string, Channel> = {};
 
-  getChannel(name: string): Channel {
-    if (!this.channels[name]) {
-      this.channels[name] = new Channel(name);
-    }
-    return this.channels[name];
+  getChannel(name: string) {
+    return (this.channels[name] ??= new Channel(name));
   }
 
   attemptDisposeChannel(name: string) {
@@ -22,68 +15,76 @@ export class App {
   }
 }
 
-class Client {
-  socket: WebSocket;
+export class Client {
+  stale: boolean;
+  dispatch: (action: Action) => void;
 
-  constructor(ws: WebSocket) {
-    this.socket = ws;
-  }
-
-  send<T>(message: T) {
-    const rawData = JSON.stringify(message);
-    this.socket.send(rawData);
+  constructor(dispatch: (action: Action) => void) {
+    this.stale = true;
+    this.dispatch = dispatch;
   }
 }
 
-class Channel {
+export class Channel {
   name: string;
-  staleClients: Client[] = [];
-  freshClients: Client[] = [];
+  clients: Client[] = [];
 
   constructor(name: string) {
     this.name = name;
   }
 
-  isEmpty() {
-    return this.freshClients.length === 0;
+  createStateUpdateAction() {
+    return { type: "sync" };
   }
 
-  addClient(socket: WebSocket) {
-    const client = new Client(socket);
-    if (this.freshClients.length === 0) {
-      this.freshClients.push(client);
+  isStateUpdateAction(action: Action) {
+    return action.type === "sync";
+  }
+
+  isEmpty() {
+    return this.clients.length === 0;
+  }
+
+  addClient(client: Client) {
+    if (this.isEmpty()) {
+      client.stale = false;
     } else {
-      this.staleClients.push(client);
-      this.requestSync();
+      this.requestStateUpdate();
     }
+    this.clients.push(client);
     return client;
   }
 
   removeClient(client: Client) {
-    this.staleClients = this.staleClients.filter((c) => c !== client);
-    this.freshClients = this.freshClients.filter((c) => c !== client);
+    this.clients = this.clients.filter((c) => c !== client);
   }
 
-  requestSync() {
-    this.freshClients[0].send({ type: SyncActionType });
+  requestStateUpdate() {
+    const freshClient = this.clients.find((client) => !client.stale);
+    if (!freshClient) {
+      throw new Error("Coudln't find a fresh client");
+    }
+    freshClient.dispatch(this.createStateUpdateAction());
   }
 
   handleAction(action: Action, sender: Client) {
-    if (action.type === SyncActionType) {
-      this.broadcast(action, this.staleClients);
-      this.freshClients.push(...this.staleClients);
-      this.staleClients = [];
+    if (this.isStateUpdateAction(action)) {
+      const staleClients = this.clients.filter((client) => client.stale);
+      staleClients.forEach((client) => {
+        client.stale = false;
+      });
+      this.broadcast(action, staleClients);
     } else {
-      this.broadcast(
-        action,
-        this.freshClients.filter((c) => c !== sender)
+      const freshClients = this.clients.filter(
+        (client) => !client.stale && client !== sender
       );
+      this.broadcast(action, freshClients);
     }
   }
 
   broadcast(action: Action, recipients: Client[]) {
     recipients.forEach((client) => {
-      client.send(action);
+      client.dispatch(action);
     });
   }
 }
