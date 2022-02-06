@@ -47,7 +47,11 @@ webSocketServer.on("connection", (socket, req) => {
   });
 
   socket.on("close", (code) => {
-    console.log("client disconnected from channel %s", channel.name);
+    console.log(
+      "client disconnected from channel %s for %s",
+      channel.name,
+      code
+    );
 
     channel.removeClient(client);
     app.attemptDisposeChannel(channel.name);
