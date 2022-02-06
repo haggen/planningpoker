@@ -9,11 +9,8 @@ export class App {
 
   attemptDisposeChannel(name: string) {
     const channel = this.channels[name];
-    if (!channel) {
-      throw new Error(`Channel ${name} not found`);
-    }
-    if (!channel.isEmpty()) {
-      throw new Error(`Channel ${name} is not empty`);
+    if (!channel?.isEmpty()) {
+      return;
     }
     delete this.channels[name];
   }

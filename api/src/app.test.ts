@@ -1,6 +1,6 @@
 import { App, Channel, Client } from "./app";
 
-describe(Client, () => {
+describe("Client", () => {
   test("dispatch", () => {
     const dispatch = jest.fn();
     const action = { type: "test" };
@@ -10,7 +10,7 @@ describe(Client, () => {
   });
 });
 
-describe(Channel, () => {
+describe("Channel", () => {
   test("freshClients, staleClients", () => {
     const channel = new Channel("test");
     channel.clients = [new Client(jest.fn()), new Client(jest.fn())];
@@ -78,7 +78,7 @@ describe(Channel, () => {
   });
 });
 
-describe(App, () => {
+describe("App", () => {
   test("getChannel", () => {
     const app = new App();
 
@@ -94,12 +94,13 @@ describe(App, () => {
     const app = new App();
 
     // We cannot dispose a channel that doesn't exist.
-    expect(() => app.attemptDisposeChannel("test")).toThrow();
+    expect(() => app.attemptDisposeChannel("test")).not.toThrow();
 
     // We cannot dispose a channel that has clients.
     const channel = app.getChannel("test");
     channel.clients.push({} as Client);
-    expect(() => app.attemptDisposeChannel("test")).toThrow();
+    app.attemptDisposeChannel("test");
+    expect(app.channels).toHaveProperty(channel.name, channel);
 
     // A disposed channel should be removed the channel list.
     channel.clients = [];
