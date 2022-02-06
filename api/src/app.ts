@@ -76,16 +76,16 @@ export class Channel {
 
   handleAction(action: Action, sender: Client) {
     if (this.isStateUpdateAction(action)) {
-      const staleClients = this.clients.filter((client) => client.stale);
-      staleClients.forEach((client) => {
+      const recipients = this.staleClients;
+      recipients.forEach((client) => {
         client.stale = false;
       });
-      this.broadcast(action, staleClients);
+      this.broadcast(action, recipients);
     } else {
-      const freshClients = this.clients.filter(
-        (client) => !client.stale && client !== sender
+      const recipients = this.freshClients.filter(
+        (client) => client !== sender
       );
-      this.broadcast(action, freshClients);
+      this.broadcast(action, recipients);
     }
   }
 
@@ -93,5 +93,13 @@ export class Channel {
     recipients.forEach((client) => {
       client.dispatch(action);
     });
+  }
+
+  get freshClients() {
+    return this.clients.filter((client) => !client.stale);
+  }
+
+  get staleClients() {
+    return this.clients.filter((client) => client.stale);
   }
 }
