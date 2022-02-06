@@ -24,30 +24,38 @@ webSocketServer.on("connection", (socket, req) => {
 
   const channel = app.getChannel(pathname.substring(1));
 
-  console.log("client connected to channel %s", channel.name);
+  console.info("client connected to channel %s", channel.name);
 
   const client = new Client((action) => {
     try {
       socket.send(JSON.stringify(action));
     } catch (err) {
-      console.error("failed to encode action", err);
+      console.error(
+        "failed to encode action in channel %s: %s",
+        channel.name,
+        err
+      );
     }
   });
   channel.addClient(client);
 
   socket.on("message", (data) => {
-    console.log("action received in channel %s: %s", channel.name, data);
+    console.info("action received in channel %s: %s", channel.name, data);
 
     try {
       const action = JSON.parse(data.toString());
       channel.handleAction(action, client);
     } catch (err) {
-      console.error("failed to parse action", err);
+      console.error(
+        "failed to parse action to channel %s: %s",
+        channel.name,
+        err
+      );
     }
   });
 
   socket.on("close", (code) => {
-    console.log(
+    console.info(
       "client disconnected from channel %s for %s",
       channel.name,
       code
