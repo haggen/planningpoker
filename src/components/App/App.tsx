@@ -28,8 +28,8 @@ export const App = () => {
   const [isConnected, broadcast] = useMultiplayer<Action>({
     channel: gameId,
     onIncoming(action) {
-      if (action.type === "sync" && !action.payload) {
-        broadcast({ type: "sync", payload: state });
+      if (action.type === "stateUpdateRequest") {
+        broadcast({ type: "stateUpdateReply", payload: state });
       } else {
         dispatch(action);
       }

@@ -60,8 +60,11 @@ export type Action =
       };
     }
   | {
-      type: "sync";
-      payload?: State;
+      type: "stateUpdateRequest";
+    }
+  | {
+      type: "stateUpdateReply";
+      payload: State;
     };
 
 const createGameId = () => {
@@ -135,10 +138,7 @@ export const useGameState = () => {
 
 export const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case "sync":
-      if (!action.payload) {
-        return state;
-      }
+    case "stateUpdateReply":
       return update(state, {
         phase: { $set: action.payload.phase },
         players: { $merge: action.payload.players },
