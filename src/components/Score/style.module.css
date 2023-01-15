@@ -1,0 +1,17 @@
+.average output {
+  align-items: center;
+  background-color: var(--color-text);
+  border-radius: 2rem;
+  box-shadow: 0 0.125rem 0.125rem rgba(0, 0, 0, 0.25);
+  color: var(--color-primary-shade);
+  display: flex;
+  font: normal 1.5rem/1 "Space Mono", monospace;
+  height: 4rem;
+  justify-content: center;
+  min-width: 4rem;
+  padding-inline: 1.5rem;
+}
+
+.average svg {
+  filter: drop-shadow(0 0.125rem 0.125rem rgba(0, 0, 0, 0.5));
+}

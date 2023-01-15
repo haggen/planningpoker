@@ -14,9 +14,17 @@ function Hand({ hand, covered }: Pick<Props, "hand" | "covered">) {
   }
 
   if (covered) {
+    if (hand) {
+      return (
+        <Face>
+          <Icon variant="check" />
+        </Face>
+      );
+    }
+
     return (
       <Face>
-        {hand ? <Icon variant="check" /> : <Icon variant="thinking" />}
+        <Icon variant="thinking" />
       </Face>
     );
   }

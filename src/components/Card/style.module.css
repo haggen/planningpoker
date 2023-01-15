@@ -6,7 +6,6 @@
   border-radius: 0.25rem;
   box-shadow: 0 var(--shadow) rgba(0, 0, 0, 0.25);
   display: flex;
-  font: normal 1.5rem/1 monospace;
   height: 5.25rem;
   justify-content: center;
   width: 3.5rem;

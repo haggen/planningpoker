@@ -3,12 +3,11 @@
 import { useEffect } from "react";
 
 import { Button } from "~/src/components/Button";
-import { Card } from "~/src/components/Card";
+import { Deck } from "~/src/components/Deck";
 import { Flex } from "~/src/components/Flex";
 import { Player } from "~/src/components/Player";
+import { Score } from "~/src/components/Score";
 import { THand, TProfile, useGame, usePlayers } from "~/src/lib/data";
-
-const availableDeck = [0.5, 1, 2, 3, 5, 8, 13, 21, 34, 55, "?", "w"] as const;
 
 const profileKey = "profile";
 const handKey = "hand";
@@ -31,7 +30,7 @@ function setStoredValue<T>(key: string, value: T) {
 
 export function Game() {
   const { stage, hands, setStage, setHand } = useGame();
-  const { clientId, count, players: state, setName } = usePlayers();
+  const { clientId, players: state, setName } = usePlayers();
 
   useEffect(() => {
     if (state[clientId]?.name) {
@@ -62,10 +61,6 @@ export function Game() {
     }
   };
 
-  if (count === 0) {
-    return <Flex justify="center">Connecting…</Flex>;
-  }
-
   return (
     <Flex direction="column" align="center" gap="3rem">
       <Flex
@@ -86,26 +81,21 @@ export function Game() {
           ))}
         </Flex>
         <div>
-          <Button
-            variant={stage === "voting" ? "default" : "hollow"}
-            onClick={handleStageChange}
-          >
-            {stage === "voting" ? "Reveal" : "Restart"}
-          </Button>
+          {stage === "voting" ? (
+            <Button onClick={handleStageChange}>Reveal</Button>
+          ) : (
+            <Button variant="hollow" onClick={handleStageChange}>
+              Restart
+            </Button>
+          )}
         </div>
       </Flex>
 
-      <Flex as="menu" gap=".5rem" justify="center">
-        {availableDeck.map((value) => (
-          <li key={value}>
-            <Card
-              value={value}
-              selected={hands[clientId] === value}
-              onSelect={handleSelect}
-            />
-          </li>
-        ))}
-      </Flex>
+      {stage === "voting" ? (
+        <Deck hand={hands[clientId]} onSelect={handleSelect} />
+      ) : (
+        <Score hands={hands} />
+      )}
     </Flex>
   );
 }
