@@ -1,0 +1,33 @@
+.card {
+  --shadow: 0.125rem 0.125rem;
+
+  align-items: center;
+  background-color: var(--color-primary-pale);
+  border-radius: 0.25rem;
+  box-shadow: 0 var(--shadow) rgba(0, 0, 0, 0.25);
+  display: flex;
+  font: normal 1.5rem/1 monospace;
+  height: 5.25rem;
+  justify-content: center;
+  width: 3.5rem;
+  transition: translate 0.125s ease-in-out, box-shadow 0.125s ease-in-out;
+}
+
+.card:not(:disabled) {
+  cursor: pointer;
+}
+
+.card:not(:disabled, .selected):is(:hover, :focus) {
+  --shadow: 0.5rem 0.5rem;
+
+  background-color: var(--color-primary-highlight);
+  translate: 0 -0.5rem;
+}
+
+.card.selected {
+  --shadow: 0.5rem 0.5rem;
+
+  background-color: var(--color-text);
+  color: var(--color-primary-shade);
+  translate: 0 -0.5rem;
+}

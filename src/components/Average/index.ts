@@ -1,1 +1,0 @@
-export { Average } from "./Average";

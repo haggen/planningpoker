@@ -1,0 +1,28 @@
+@import "npm:resetize";
+
+html {
+  --color-primary: #496c37;
+  --color-primary-shade: #37512a;
+  --color-primary-pale: #5b8745;
+  --color-primary-highlight: #6da253;
+  --color-text-pale: #93a989;
+  --color-text: #ffffff;
+
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  scrollbar-gutter: stable;
+}
+
+@media screen and (width > 1920px) {
+  html {
+    font-size: 24px;
+  }
+}
+
+::placeholder {
+  color: var(--color-text-pale);
+}
+
+path:not([fill]) {
+  fill: currentColor;
+}

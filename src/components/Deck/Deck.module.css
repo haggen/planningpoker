@@ -1,8 +1,0 @@
-.deck {
-  align-items: stretch;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  min-width: min-content;
-  width: 100%;
-}

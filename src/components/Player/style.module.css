@@ -1,0 +1,11 @@
+.player {
+  width: 6rem;
+}
+
+.player figcaption {
+  font-weight: bolder;
+}
+
+.player.faded {
+  opacity: 0.5;
+}

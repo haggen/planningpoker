@@ -1,0 +1,30 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vmin;
+  margin: 0 auto;
+  max-width: 64rem;
+}
+
+.topbar {
+  height: 5rem;
+}
+
+.topbar h1 {
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.main {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.footer {
+  height: 5rem;
+}
+
+.footer a {
+  font-weight: bolder;
+}
