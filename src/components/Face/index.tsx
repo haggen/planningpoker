@@ -16,7 +16,7 @@ function getContent(value: THand) {
     case "?":
       return <>?</>;
     case "w":
-      return <Icon variant="eye" />;
+      return <Icon variant="eye" aria-label="Spectator" />;
     case 0.5:
       return <>½</>;
     case undefined:
