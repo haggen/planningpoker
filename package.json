@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "hindsight",
+  "name": "planningpoker",
   "version": "1.0.0",
   "author": "Arthur <arthur@corenzan.com>",
   "license": "Apache-2.0",
@@ -15,7 +15,6 @@
     "parcel": "^2.8.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-player": "^2.11.0",
     "resetize": "^30.0.1",
     "ulid": "^2.3.0",
     "wouter": "^2.9.1",
@@ -23,7 +22,9 @@
     "yjs": "^13.5.44"
   },
   "devDependencies": {
+    "@parcel/packager-raw-url": "^2.8.2",
     "@parcel/transformer-svg-react": "^2.8.2",
+    "@parcel/transformer-webmanifest": "^2.8.2",
     "@prettier/plugin-xml": "^2.2.0",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
