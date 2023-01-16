@@ -1,3 +1,7 @@
+.score {
+  height: 5.25rem;
+}
+
 .average output {
   align-items: center;
   background-color: var(--color-text);

@@ -26,7 +26,7 @@ export function Score({ hands }: Props) {
   }, 0);
 
   return (
-    <Flex gap="1.5rem">
+    <Flex gap="1.5rem" className={classes.score}>
       {Object.keys(score).map((hand) => (
         <Flex key={hand} gap="0.5rem">
           <Card value={parseFloat(hand)} />×{score[hand]}
