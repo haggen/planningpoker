@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { Button } from "~/src/components/Button";
 import { Deck } from "~/src/components/Deck";
 import { Flex } from "~/src/components/Flex";
-import { Player } from "~/src/components/Player";
 import { Score } from "~/src/components/Score";
+import { Table } from "~/src/components/Table";
 import { THand, TProfile, useGame, usePlayers } from "~/src/lib/data";
 
 const profileKey = "profile";
@@ -70,16 +70,8 @@ export function Game() {
         gap="3rem"
         style={{ flex: "1 0 auto" }}
       >
-        <Flex gap="1.5rem">
-          {Object.keys(state).map((key) => (
-            <Player
-              key={key}
-              name={state[key].name}
-              hand={hands[key]}
-              covered={stage === "voting"}
-            />
-          ))}
-        </Flex>
+        <Table clients={state} hands={hands} stage={stage} />
+
         <div>
           {stage === "voting" ? (
             <Button onClick={handleStageChange}>Reveal</Button>
