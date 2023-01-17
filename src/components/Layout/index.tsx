@@ -101,8 +101,6 @@ export function Layout({ children }: Props) {
         <h1>
           <a href="/" target="_blank">
             <svg
-              width="188"
-              height="25"
               viewBox="0 0 188 25"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
