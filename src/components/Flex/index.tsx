@@ -19,6 +19,7 @@ type Props = {
   align?: CSSProperties["alignItems"];
   justify?: CSSProperties["justifyContent"];
   gap?: CSSProperties["gap"];
+  wrap?: CSSProperties["flexWrap"];
 };
 
 function Flex<E extends AcceptableElementType = "div">(
@@ -29,6 +30,7 @@ function Flex<E extends AcceptableElementType = "div">(
     align = direction !== "column" ? "center" : undefined,
     justify,
     gap,
+    wrap,
     ...props
   }: PolymorphicPropsWithRef<E, Props>,
   ref: PolymorphicRef<E>
@@ -47,6 +49,7 @@ function Flex<E extends AcceptableElementType = "div">(
     alignItems: align,
     justifyContent: justify,
     gap,
+    flexWrap: wrap,
     ...props.style,
   };
 
