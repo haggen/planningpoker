@@ -1,4 +1,10 @@
-import { FormEvent, ReactNode, useState } from "react";
+import {
+  FocusEvent,
+  FormEvent,
+  KeyboardEvent,
+  ReactNode,
+  useState,
+} from "react";
 
 import * as classes from "./style.module.css";
 
@@ -25,7 +31,7 @@ function Profile() {
     setEditing(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case "Escape":
         handleCancel();
@@ -36,7 +42,7 @@ function Profile() {
     e.preventDefault();
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
     e.currentTarget.select();
   };
 
