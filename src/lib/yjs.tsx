@@ -50,7 +50,9 @@ export function Provider({ roomId, children }: Props) {
       return;
     }
 
-    const provider = new WebrtcProvider(roomId, doc);
+    const provider = new WebrtcProvider(roomId, doc, {
+      signaling: ["wss://signaling.crz.li"],
+    });
     setProvider(provider);
 
     return () => {
