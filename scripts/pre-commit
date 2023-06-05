@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+set -ue
+
+md5sum $(git diff --diff-filter=ACMR --cached --name-only | xargs) > /tmp/pre-commit-summary
+
+echo "🔎 Checking code…"
+
+npm run-script --silent format -- --write --loglevel silent
+npm run-script --silent lint -- --fix --quiet
+
+if md5sum --status --check /tmp/pre-commit-summary; then
+	echo "✅ All good."
+else
+	echo "🚫 The pre-commit hook changed some of the files being commited."
+	exit 1
+fi

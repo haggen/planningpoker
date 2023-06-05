@@ -1,14 +1,22 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "skipLibCheck": true,
     "moduleResolution": "node",
-    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowJs": false,
+    "noEmit": true,
     "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
-    },
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
-  },
-  "exclude": ["node_modules"]
+    }
+  }
 }
