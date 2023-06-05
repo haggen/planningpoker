@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import {
   createContext,
   ReactNode,
@@ -100,6 +102,7 @@ export function useClientId() {
  */
 function getAwarenessStateSnapshot<T extends object>(awareness: Awareness) {
   const state = Object.fromEntries(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     (awareness.getStates() as Map<number, T>).entries()
   );
   return state;

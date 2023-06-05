@@ -12,29 +12,28 @@ type Props = {
 export function Score({ hands }: Props) {
   const score = Object.values(hands).reduce((score, hand) => {
     if (typeof hand === "number") {
-      score[String(hand)] = (score[String(hand)] ?? 0) + 1;
+      score.set(hand, (score.get(hand) ?? 0) + 1);
     }
     return score;
-  }, {} as Record<string, number>);
+  }, new Map<number, number>());
 
-  const average = Object.keys(score).reduce((average, key) => {
-    const value = parseFloat(key);
-    if (average === 0) {
-      return value;
-    }
-    return (average + value) / 2;
-  }, 0);
+  const average = Array.from(score.entries()).reduce(
+    ([sum, total], [value, amount]) => {
+      return [sum + value * amount, total + amount];
+    },
+    [0, 0]
+  );
 
   return (
     <Flex gap="1.5rem" className={classes.score}>
-      {Object.keys(score).map((hand) => (
+      {Array.from(score.keys()).map((hand) => (
         <Flex key={hand} gap="0.5rem">
-          <Card value={parseFloat(hand)} />×{score[hand]}
+          <Card value={hand} />×{score.get(hand)}
         </Flex>
       ))}
       <Flex gap="0.5rem" className={classes.average}>
         <Icon variant="approximate" />
-        <output>{average}</output>
+        <output>{(average[0] / average[1]).toFixed(2)}</output>
       </Flex>
     </Flex>
   );
